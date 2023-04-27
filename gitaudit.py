@@ -183,15 +183,15 @@ def github_read_file(repository_name, file_path):
 
 def find_leavers(userlist):
     leavers = []
-    logging.info("Loading developer YAML")
+    logger.info("Loading developer YAML")
     developers = yaml.safe_load(userlist)['developers']
     dev_usernames = []
     for user in developers:
         dev_usernames.append(user['github_username'])
-    logging.info("Checking GitHub members against Developer YAML")
+    logger.info("Checking GitHub members against Developer YAML")
     for user in get_github_access():
         if user not in dev_usernames:
-            logging.info(f"Found user not in Developer YAML - {user}")
+            logger.info(f"Found user not in Developer YAML - {user}")
             leavers.append(user)
     return leavers
 
@@ -199,17 +199,17 @@ def find_leavers(userlist):
 def main():
     if git_login() == 'Success':
         try:
-            logging.info("Reading developers YAML from GitHub")
+            logger.info("Reading developers YAML from GitHub")
             sesame_list = github_read_file(
                 config[args.gitenv]['repo'],
                 config[args.gitenv]['filepath']
                 )
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         try:
-            logging.info("Checking for leavers")
+            logger.info("Checking for leavers")
             leavers = find_leavers(sesame_list)
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
         for leaver in leavers:
             print(leaver)
